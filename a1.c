@@ -13,6 +13,31 @@
 
 // Include library to work with Input and output (standardIO)
 #include <stdio.h>
+
+#define WELCOME_MESSAGE "Welcome to the juice filling machine calculator!\n"
+#define GOODBYE_MESSAGE "\nThe canisters will be filled as soon as we receive your payment.\nThank you for using the juice filling machine calculator!\n"
+
+#define MINI_CANISTER 5
+#define SMALL_CANISTER 10
+#define MEDIUM_CANISTER 15
+#define BIG_CANISTER 20
+#define MEGA_CANISTER 25
+
+const int ORANGE_JUICE = 1;
+const double ORANGE_JUICE_COST_PER_LITER = 0.20;
+const int APPLE_JUICE = 2;
+const double APPLE_JUICE_COST_PER_LITER = 0.15;
+
+const double FLAT_RATE = 5.00;
+const int MAX_LITERS = 1000;
+const int MIN_LITERS = 1;
+
+const double MINI_CANISTER_COST = 0.10;
+const double SMALL_CANISTER_COST = 0.15;
+const double MEDIUM_CANISTER_COST = 0.20;
+const double BIG_CANISTER_COST = 0.20;
+const double MEGA_CANISTER_COST = 0.25;
+
 // Forward declarations
 double calculateJuiceCosts(int liters, int juiceType);
 double calculateCanisterCosts(int quantity, int canisterSize);
@@ -28,19 +53,17 @@ double calculateCanisterCosts(int quantity, int canisterSize);
 /// Using this information, we then create a small infobox where we display the amount of litres we can fill in each
 /// canister, how many canister we need and how much this would cost.
 ///
-/// @param argc not used
-/// @param argv not used
-///
 /// @return always zero
 //
-int main(int argc, char* argv[]) {
+int main()
+{
     int juiceType, liters, canisterSize, quantity;
     double juiceCosts, canisterCosts, totalCosts;
     int confirmation;
 
     // Welcome message
-    printf("Welcome to the juice filling machine calculator!\n");
-    // A loop that goes trough each instructions at least once, as long as the user doesn't stop it.
+    printf(WELCOME_MESSAGE);
+    // A loop that goes through each instruction at least once, as long as the user doesn't stop it.
     do
     {
         // User input: Juice Type. Ask until the inputted value is correct
@@ -55,17 +78,17 @@ int main(int argc, char* argv[]) {
                 continue;
             }
 
-            if (juiceType != 1 && juiceType != 2)
+            if (juiceType != ORANGE_JUICE && juiceType != APPLE_JUICE)
             {
                 printf("Invalid input! Please choose a valid juice.\n");
             }
         }
-        while (juiceType != 1 && juiceType != 2);
+        while (juiceType != ORANGE_JUICE && juiceType != APPLE_JUICE);
 
         // User input: Liters
         do
         {
-            printf("\nHow many litres do you want to fill? (1 to 1000)\n > ");
+            printf("\nHow many litres do you want to fill? (%d to %d)\n > ", MIN_LITERS, MAX_LITERS);
             if (scanf("%d", &liters) != 1)
             {
                 printf("Invalid input! Please choose a valid amount.\n");
@@ -74,25 +97,25 @@ int main(int argc, char* argv[]) {
                 continue;
             }
 
-            if (liters < 1 || liters > 1000)
+            if (liters < MIN_LITERS || liters > MAX_LITERS)
             {
                 printf("Invalid input! Please choose a valid amount.\n");
             }
         }
-        while (liters < 1 || liters > 1000);
+        while (liters < MIN_LITERS || liters > MAX_LITERS);
 
         // User input: Canister Size
         do
         {
-            if (juiceType == 1)
-            { // Orange juice
+            if (juiceType == ORANGE_JUICE)
+            {
                 printf("\nWhich size of canister would you like to use for your orange juice?\n");
-                printf("- 5 litres\n- 10 litres\n- 20 litres\n > ");
+                printf("- %d litres\n- %d litres\n- %d litres\n > ", MINI_CANISTER, SMALL_CANISTER, BIG_CANISTER);
             }
             else
-            { // Apple juice
+            {
                 printf("\nWhich size of canister would you like to use for your apple juice?\n");
-                printf("- 5 litres\n- 15 litres\n- 25 litres\n > ");
+                printf("- %d litres\n- %d litres\n- %d litres\n > ", MINI_CANISTER, MEDIUM_CANISTER, MEGA_CANISTER);
             }
 
             if (scanf("%d", &canisterSize) != 1)
@@ -103,14 +126,14 @@ int main(int argc, char* argv[]) {
                 continue;
             }
             // Depending on the juice type, only certain canister types are allowed
-            if ((juiceType == 1 && (canisterSize != 5 && canisterSize != 10 && canisterSize != 20)) ||
-                (juiceType == 2 && (canisterSize != 5 && canisterSize != 15 && canisterSize != 25)))
+            if ((juiceType == ORANGE_JUICE && (canisterSize != MINI_CANISTER && canisterSize != SMALL_CANISTER && canisterSize != BIG_CANISTER)) ||
+                (juiceType == APPLE_JUICE && (canisterSize != MINI_CANISTER && canisterSize != MEDIUM_CANISTER && canisterSize != MEGA_CANISTER)))
             {
                 printf("Invalid input! Please choose a valid canister size.\n");
             }
         }
-        while ((juiceType == 1 && (canisterSize != 5 && canisterSize != 10 && canisterSize != 20)) ||
-                 (juiceType == 2 && (canisterSize != 5 && canisterSize != 15 && canisterSize != 25)));
+        while ((juiceType == ORANGE_JUICE && (canisterSize != MINI_CANISTER && canisterSize != SMALL_CANISTER && canisterSize != BIG_CANISTER)) ||
+                 (juiceType == APPLE_JUICE && (canisterSize != MINI_CANISTER && canisterSize != MEDIUM_CANISTER && canisterSize != MEGA_CANISTER)));
 
         // Calculate canister quantity and left-over litres
         quantity = liters / canisterSize;
@@ -124,7 +147,7 @@ int main(int argc, char* argv[]) {
         canisterCosts = calculateCanisterCosts(quantity, canisterSize);
 
         // Calculate total costs
-        totalCosts = juiceCosts + canisterCosts + 5.00; // Flat rate for using the machine
+        totalCosts = juiceCosts + canisterCosts + FLAT_RATE; // Flat rate for using the machine
 
         // Display results
         printf("\nIt is possible to fill %d canisters with the size of %d litres.\n", quantity, canisterSize);
@@ -132,7 +155,7 @@ int main(int argc, char* argv[]) {
 
         printf("\nThe filling costs are:\n");
         printf("----------------------------------------------\n");
-        printf("- %d litres of %s juice: %.2f €\n", liters, (juiceType == 1) ? "orange" : "apple", juiceCosts);
+        printf("- %d litres of %s juice: %.2f €\n", liters, (juiceType == ORANGE_JUICE) ? "orange" : "apple", juiceCosts);
         printf("- %d canisters: %.2f €\n", quantity, canisterCosts);
         printf("- Flat rate for using the machine: 5.00 €\n");
         printf("----------------------------------------------\n");
@@ -160,8 +183,7 @@ int main(int argc, char* argv[]) {
     }
     while (confirmation != 1);
 
-        printf("\nThe canisters will be filled as soon as we receive your payment.\n");
-        printf("Thank you for using the juice filling machine calculator!\n");
+        printf(GOODBYE_MESSAGE);
 
     return 0;
 }
@@ -178,18 +200,14 @@ int main(int argc, char* argv[]) {
 //
 double calculateJuiceCosts(int liters, int juiceType)
 {
-    double juiceCostPerLiter;
-
-    if (juiceType == 1)
-    { // Orange juice
-        juiceCostPerLiter = 0.20;
+    if (juiceType == ORANGE_JUICE)
+    {
+        return liters * ORANGE_JUICE_COST_PER_LITER;
     }
     else
-    { // Apple juice
-        juiceCostPerLiter = 0.15;
+    {
+        return liters * APPLE_JUICE_COST_PER_LITER;
     }
-
-    return liters * juiceCostPerLiter;
 }
 
 //------------------------------------------------------------------------------
@@ -204,26 +222,20 @@ double calculateJuiceCosts(int liters, int juiceType)
 //
 double calculateCanisterCosts(int quantity, int canisterSize)
 {
-    double canisterCostPerLiter;
 
     switch (canisterSize)
     {
-        case 5:
-            canisterCostPerLiter = 0.10;
-            break;
-        case 10:
-            canisterCostPerLiter = 0.15;
-            break;
-        case 15:
-        case 20:
-            canisterCostPerLiter = 0.20;
-            break;
-        case 25:
-            canisterCostPerLiter = 0.25;
-            break;
+        case MINI_CANISTER:
+            return quantity * MINI_CANISTER_COST;
+        case SMALL_CANISTER:
+            return quantity * SMALL_CANISTER_COST;
+        case MEDIUM_CANISTER:
+            return quantity * MEDIUM_CANISTER_COST;
+        case BIG_CANISTER:
+            return quantity * BIG_CANISTER_COST;
+        case MEGA_CANISTER:
+            return quantity * MEGA_CANISTER_COST;
         default:
             return -1; // Invalid canister size
     }
-
-    return quantity * canisterCostPerLiter;
 }
